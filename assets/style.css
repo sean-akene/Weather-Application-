@@ -11,12 +11,17 @@ body {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
+
+.conditions{
+  background-color: #047bfe;
+  color: white;
+  font-weight: 320;
+  font-size: 15px;
+  margin-bottom: 2rem;
+}
+
 li:hover{
     background-color: lightskyblue;
     text-decoration: underline;
 }
 
-.forecast{
-    
-    font-size: 16px;
-}
