@@ -1,25 +1,24 @@
-$(document).ready(function() {
-
+$(document).ready(function () {
     var apiKey = "c99bd174694c00b9d6ab9d9400f80517";
-    var today = moment().format("M/D/YY");
-    var city = $(".city-input").val;
+    var indexBox = $("#uv-index");
 
     $("#search-button").on("click", function (event) {
-        event.preventDefault()
+        event.preventDefault();
+
+        // when search button clicked get weather function
+        var city = $(".city-input").val().trim();
+        getWeather(city);
+        keepCity(city);
+      
+
     });
 
-    
-    // when search button clicked get weather function 
-    getWeather(city);
-
-
-    //getting weather from http://api.openweathermap.org
+    //getting weather from API
     function getWeather(city) {
         var queryUrl =
             "http://api.openweathermap.org/data/2.5/forecast?q=" +
             city +
             "&APPID=1ffddcadb7b130db5cc98df184fac87d";
-
 
         $.ajax({
             url: queryUrl,
@@ -27,67 +26,80 @@ $(document).ready(function() {
         }).then(function (response) {
             console.log(response);
 
-            //assigning latitude information got it from open weather map
+            // Latttitude and Longitude Variable
             var lat = response.city.coord.lat;
-
-            //assigning longtitude information got it from open weather map
             var lon = response.city.coord.lon;
             console.log(response.city.coord.lon);
+           
 
             updateWeather(response);
+            searchUV(lat, lon);
         });
+
+    }
+    // API call to set up UV index.
+    function searchUV(lat, lon) {
+        var uvqURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+        $.ajax({
+            url: uvqURL,
+            method: "GET"
+        }).then(function (response) {
+            $(currentUvindex).html(response.value);
+        });
+        var uvIndex = $("<p>").html(`: <span style="color:white; background-color:${uvIndexStyler(parseFloat(response.current.uvi))}">${response.current.uvi}</span>`)
+        indexBox.append(uvIndex);
     }
 
+    // Function to get weather for main card
+
     function updateWeather(response) {
-        $("#current-city").html(
-            "<h2>" +
+
+        $("#time").html(
+            "<h3>" +
             response.city.name +
             "   (" +
             response.list[0].dt_txt +
             ")" +
-            "</h2>"
+            "</h3>"
         );
-        $("#current-weather").html(response.list[0].weather[0].main + "    ");
+        $("#temperature").html(response.list[0].weather[0].main + "    ");
 
-        var icon = $(".wIcon");
+        var pictureI = $(".wIcon");
         var weatherIcon = response.list[0].weather[0].main;
 
         console.log(response.list[0].weather[0].main);
 
         if (weatherIcon === "Clear") {
-            icon.addClass("fas fa-sun");
+            pictureI.addClass("fas fa-sun");
         } else if (weatherIcon === "Clouds") {
-            icon.addClass("fas fa-cloud");
+            pictureI.addClass("fas fa-cloud");
         } else if (weatherIcon === "Snow") {
-            icon.addClass("fas fa-snow");
+            pictureI.addClass("fas fa-snow");
         } else if (weatherIcon === "Drizzle") {
-            icon.addClass("fas fa-cloud-drizzle");
+            pictureI.addClass("fas fa-cloud-drizzle");
         } else if (weatherIcon === "Rain") {
-            icon.addClass("fas fa-cloud-showers-heavy");
+            pictureI.addClass("fas fa-cloud-showers-heavy");
         }
 
-        $("#current-weather").append(icon);
+        $(".wIcon").append(pictureI);
 
-        $("#temperaature").html(response.list[0].main.temp + " °F");
+        $("#temperature").html(response.list[0].main.temp + " °K");
         $("#humidity").html(response.list[0].main.humidity + " %");
         $("#windspeed").html(response.list[0].wind.speed + " MPH");
 
-
-        //looping through 5 days data from open weather map & get dates from moment.js
-        for (var i = 1; i < 6; i++) {
+        //looping through 5 day forecast
+        for (var i = 0; i < 5; i++) {
             var date = moment()
-                .add(i + 1, "days")
+                .add([(i + 1) * 8 - 1], "days")
                 .format("M/D/YYYY");
-            var dateBox = $(".fiveDate")
+            var dateBox = $(".fiveDate");
             dateBox.html(date);
-            var tempBox = $(".fiveTemp")
-            tempBox.html(response.list[i].main.temp + " °F")
-            var humidBox = $(".fiveHumidity")
-            humidBox.html(response.list[i].main.humidity + " %")
+            var tempBox = $(".fiveTemp");
+            tempBox.html(response.list[(i + 1) * 8 - 1].main.temp + "°K");
+            var humidBox = $(".fiveHumidity");
+            humidBox.html(response.list[(i + 1) * 8 - 1].main.humidity + "%");
 
-
-
-            var iconBox = $(".fiveImg")
+            var iconBox = $(".fiveImg");
 
             var weatherIcon = response.list[0].weather[0].main;
 
@@ -105,5 +117,51 @@ $(document).ready(function() {
         }
     }
 
-})
+    function uvIndexStyler(uvIndex) {
+        if (uvIndex < 4) {
+            return "green";
+        } else
+            if (uvIndex < 7) {
+                return "orange";
+            } else {
+                return "red";
+            }
+    }
 
+    function keepCity(city) {
+        if (localStorage.getItem("searchHistory")) {
+            var history = JSON.parse(localStorage.getItem("searchHistory"));
+            //stopping city presents more than once
+            if (history.indexOf(city) === -1) {
+                // push city to history
+                history.push(city);
+                //saving history to local storage
+                localStorage.setItem("searchHistory", JSON.stringify(history));
+            }
+        } else {
+            //or save [city] to localstorage
+            localStorage.setItem("searchHistory", JSON.stringify([city]));
+        }
+        searchCityList();
+    }
+
+    // //list for last 8 searches
+    function searchCityList() {
+        if (localStorage.getItem("searchHistory")) {
+            //retrieve search history and initialize in var city list
+            var cityList = JSON.parse(localStorage.getItem("searchHistory"));
+            //clearing div from appending all the time
+            $(".search-list").empty();
+            //creating list for searched cities
+            for (var i = 0; i < cityList.length; i++) {
+                var lists = $("<li>");
+                lists.addClass("list-group-item");
+                var listItem = $("<p>").text(cityList[i]);
+                listItem.addClass("searchCity");
+                lists.append(listItem);
+                $(".search-list").append(lists);
+            }
+        }
+
+    }
+});

@@ -29,7 +29,7 @@
                         type="submit"><span class="fas fa-search"></span>
                     </button>
                 </div>
-                <ul class="search-history">
+                <ul class="search-list">
 
                 </ul>
             </aside>
@@ -43,14 +43,16 @@
     <div class="col-xl-9 col-md-9 col-sm-8 co">
         <div class="row ml-2 border border-dark rounded">
             <div class="col-sm-12" id="current-weather">
-                <h3 class="city-name mb-1 mt-2 bolder" id="current-city"><span class="wIcon"></span></h3>
-                <p>Date: <span class="local" id="time"></span></p>
-                <p>Temperature: <span class="local" id="temperature"></span></p>
+                <h3 class="city-name mb-1 mt-2 bolder" id="current-city"></h3>
+                    <div class="wIcon"></div>
+                <p>City: <span class="local" id="time"></span></p>
+                <p>Forecast: <span class="local" id="temperature"></span></p>
                 <p>Humidity: <span class="local" id="humidity"></span></p>
                 <p>Wind Speed: <span class="local" id="windspeed"></span></p>
                 <p>
-                    UV index:
-                    <span class="current bg-danger rounded py-1 px-1 text-white" id="uv-index"></span>
+                    UV index
+                    <span id="uv-index"></span>
+                    <span class="uvBox"></span>
                 </p>
             </div>
         </div>
@@ -59,34 +61,34 @@
             <h3>5-Day Forecast:</h3>
             <div class="row text-light">
                 <div class="col-xl-2 col-md-2 col-sm-2 ml-2 conditions">
-                    <p id="fiveDate"></p>
-                    <p id="fiveImg"></p>
+                    <p class="fiveDate"></p>
+                    <p class="fiveImg"></p>
                     <p>Temp:<span class="fiveTemp"></span></p>
                     <p>Humidity:<span class="fiveHumidity"></span></p>
                 </div>
                 <div class="col-xl-2 col-md-2 col-sm-2 ml-2 conditions ">
-                    <p id="fiveDate"></p>
-                    <p id="fiveImg"></p>
-                    <p>Temp:<span class="fiveTemp1"></span></p>
-                    <p>Humidity:<span class="fHumidity1"></span></p>
-                </div>
-                <div class="col-xl-2 col-md-2 col-sm-2 ml-2 conditions">
-                    <p id="fiveDate"></p>
-                    <p id="fiveImg"></p>
+                    <p class="fiveDate"></p>
+                    <p class="fiveImg"></p>
                     <p>Temp:<span class="fiveTemp"></span></p>
                     <p>Humidity:<span class="fiveHumidity"></span></p>
                 </div>
                 <div class="col-xl-2 col-md-2 col-sm-2 ml-2 conditions">
-                    <p id="fiveDate"></p>
-                    <p id="fiveImg"></p>
+                    <p class="fiveDate"></p>
+                    <p class="fiveImg"></p>
+                    <p>Temp:<span class="fiveTemp"></span></p>
+                    <p>Humidity:<span class="fiveHumidity"></span></p>
+                </div>
+                <div class="col-xl-2 col-md-2 col-sm-2 ml-2 conditions">
+                    <p class="fiveDate"></p>
+                    <p class="fiveImg"></p>
                     <p>Temp:<span class="fiveTemp"></span></p>
                     <p>Humidity:<span class="fiveHumidity"></span></p>
                 </div>
                 <div class="col-xl-2 col-md-2 col-sm-2 ml-2  conditions">
-                    <p id="fiveDate"></p>
-                    <p id="fiveImg"></p>
+                    <p class="fiveDate"></p>
+                    <p class="fiveImg"></p>
                     <p>Temp:<span class="fiveTemp"></span></p>
-                    <p id="fiveHumidity">Humidity:</p>
+                    <p>Humidity:<span class="fiveHumidity"></span></p>
                 </div>
             </div>
         </div>
@@ -101,3 +103,6 @@
 </body>
 
 </html>
+
+
+<!-- class="current bg-danger rounded py-1 px-1 text-white" -->
