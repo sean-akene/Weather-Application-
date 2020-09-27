@@ -7,9 +7,11 @@ $(document).ready(function () {
 
         // when search button clicked get weather function
         var city = $(".city-input").val().trim();
+
         getWeather(city);
         keepCity(city);
-      
+
+
 
     });
 
@@ -29,25 +31,29 @@ $(document).ready(function () {
             // Latttitude and Longitude Variable
             var lat = response.city.coord.lat;
             var lon = response.city.coord.lon;
-            console.log(response.city.coord.lon);
-           
+            // console.log(response.city.coord.lon);
 
-            updateWeather(response);
             searchUV(lat, lon);
+            updateWeather(response);
+
         });
 
     }
     // API call to set up UV index.
     function searchUV(lat, lon) {
-        var uvqURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+        var uvqURL = "https://api.openweathermap.org/data/2.5/uvi?&lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
         $.ajax({
             url: uvqURL,
             method: "GET"
         }).then(function (response) {
-            $(currentUvindex).html(response.value);
+            $(indexBox).html(response.value);
+            console.log(response);
+
+            var uvIndex = $("<p>").html("color", "white", "background-color", styleUV(parseFloat(response.current.uvi))
+                .indexBox.append(uvIndex))
         });
-        var uvIndex = $("<p>").html(`: <span style="color:white; background-color:${uvIndexStyler(parseFloat(response.current.uvi))}">${response.current.uvi}</span>`)
-        indexBox.append(uvIndex);
+
+
     }
 
     // Function to get weather for main card
@@ -66,8 +72,6 @@ $(document).ready(function () {
 
         var pictureI = $(".wIcon");
         var weatherIcon = response.list[0].weather[0].main;
-
-        console.log(response.list[0].weather[0].main);
 
         if (weatherIcon === "Clear") {
             pictureI.addClass("fas fa-sun");
@@ -88,20 +92,22 @@ $(document).ready(function () {
         $("#windspeed").html(response.list[0].wind.speed + " MPH");
 
         //looping through 5 day forecast
-        for (var i = 0; i < 5; i++) {
-            var date = moment()
-                .add([(i + 1) * 8 - 1], "days")
-                .format("M/D/YYYY");
-            var dateBox = $(".fiveDate");
-            dateBox.html(date);
-            var tempBox = $(".fiveTemp");
-            tempBox.html(response.list[(i + 1) * 8 - 1].main.temp + "°K");
-            var humidBox = $(".fiveHumidity");
-            humidBox.html(response.list[(i + 1) * 8 - 1].main.humidity + "%");
+        for (var i = 0; i < response.list.length; i++) {
+            // only look at forecasts around 3:00pm
+            if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
 
-            var iconBox = $(".fiveImg");
+                var dateBox = $(".fiveDate");
+                dateBox.html(dt_txt);
+                var tempBox = $(".fiveTemp");
+                tempBox.html(response.list[i].main.temp + "°K");
+                var humidBox = $(".fiveHumidity");
+                humidBox.html(response.list[i].main.humidity + "%");
 
-            var weatherIcon = response.list[0].weather[0].main;
+                var iconBox = $(".fiveImg");
+
+                var weatherIcon = response.list[i].weather[0].main;
+              
+            }
 
             if (weatherIcon === "Clear") {
                 iconBox.addClass("fas fa-sun");
@@ -117,14 +123,14 @@ $(document).ready(function () {
         }
     }
 
-    function uvIndexStyler(uvIndex) {
-        if (uvIndex < 4) {
-            return "green";
+    function styleUV(uvIndex) {
+        if (indexBox.val < 4) {
+            $("#uv-index").addClass("bg-primary")
         } else
-            if (uvIndex < 7) {
-                return "orange";
+            if (indexBox.val < 7) {
+                $("#uv-index").addClass("bg-warnig")
             } else {
-                return "red";
+                $("#uv-index").addClass("bg-danger")
             }
     }
 
