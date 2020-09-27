@@ -97,7 +97,7 @@ $(document).ready(function () {
             if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
 
                 var dateBox = $(".fiveDate");
-                dateBox.html(dt_txt);
+                dateBox.html(response.list[i].dt_txt);
                 var tempBox = $(".fiveTemp");
                 tempBox.html(response.list[i].main.temp + "°K");
                 var humidBox = $(".fiveHumidity");
@@ -106,19 +106,20 @@ $(document).ready(function () {
                 var iconBox = $(".fiveImg");
 
                 var weatherIcon = response.list[i].weather[0].main;
-              
-            }
 
-            if (weatherIcon === "Clear") {
-                iconBox.addClass("fas fa-sun");
-            } else if (weatherIcon === "Rain") {
-                iconBox.addClass("fas fa-cloud-showers-heavy");
-            } else if (weatherIcon === "Snow") {
-                iconBox.addClass("fas fa-snowflake");
-            } else if (weatherIcon === "Drizzle") {
-                iconBox.addClass("fas fa-cloud-drizzle");
-            } else if (weatherIcon === "Clouds") {
-                iconBox.addClass("fas fa-cloud");
+
+
+                if (weatherIcon === "Clear") {
+                    iconBox.addClass("fas fa-sun");
+                } else if (weatherIcon === "Rain") {
+                    iconBox.addClass("fas fa-cloud-showers-heavy");
+                } else if (weatherIcon === "Snow") {
+                    iconBox.addClass("fas fa-snowflake");
+                } else if (weatherIcon === "Drizzle") {
+                    iconBox.addClass("fas fa-cloud-drizzle");
+                } else if (weatherIcon === "Clouds") {
+                    iconBox.addClass("fas fa-cloud");
+                }
             }
         }
     }
