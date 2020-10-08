@@ -16,7 +16,7 @@ $(document).ready(function () {
     // URL to get weather
     function getWeather(city) {
         var queryUrl =
-            "http://api.openweathermap.org/data/2.5/forecast?q=" +
+            "https://api.openweathermap.org/data/2.5/forecast?q=" +
             city +
             "&APPID=1ffddcadb7b130db5cc98df184fac87d";
 
